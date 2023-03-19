@@ -53,8 +53,9 @@ class GoBoard:
                     num += 1
 
         return num
-
-
     
-
-
+    def opposite_color(self):
+        if self.turn == "black":
+            self.turn =  "white"
+        elif self.turn == "white":
+            self.turn = "black"

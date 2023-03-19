@@ -5,12 +5,6 @@ class Stone:
         self.board = board
         self.adjacent = []
     
-    def opposite_color(self):
-        if self.color == "black":
-            return "white"
-        if self.color == "white":
-            return "black"
-    
     def adjacent_stones(self):
         x, y = self.position
         north = -2
@@ -54,6 +48,7 @@ class Stone:
         
         self.adjacent =  [north, south, west, east]
     
+
     def surround_by_oppo(self):
         self.adjacent_stones()
         for surround in self.adjacent:

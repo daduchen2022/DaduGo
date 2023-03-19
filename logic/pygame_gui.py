@@ -68,6 +68,11 @@ def new_game_button():
     new_game_button.draw_button()
     return new_game_button.is_clicking_button()
 
+def retreat_button():
+    retreat = Button("Retreat", 1000, 600)
+    retreat.draw_button()
+    return retreat.is_clicking_button()
+
 def main_interface(board):
     play = GameLogic(board)
     while True:
@@ -75,6 +80,7 @@ def main_interface(board):
         draw_board()
         draw_stone(play.board)
         new_game_button()
+        #retreat_button()
 
         loc = pygame.mouse.get_pos()
     
@@ -85,17 +91,18 @@ def main_interface(board):
             if event.type == pygame.MOUSEBUTTONDOWN and 90 <= loc[0] <= 920 and \
                 40 <= loc[1] <= 870:
                 stone = Stone(locate_stone(loc), play.board.turn, play.board)
-                
-                if play.move(stone):
-                    if play.board.turn == "black":
-                        play.board.turn = "white"
-                    elif play.board.turn == "white":
-                        play.board.turn = "black"
+                play.move(stone)
+
+                print(play.board.turn)
             
             if event.type == pygame.MOUSEBUTTONDOWN and new_game_button():
                 play.step = 0
                 play.record = []
                 play.board.reset_board()
+            
+            #if event.type == pygame.MOUSEBUTTONDOWN and retreat_button():
+                #play.step -= 1
+                #play.board = play.record[-2]
         
         pygame.display.update()
 
