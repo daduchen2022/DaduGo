@@ -10,7 +10,8 @@ class GameLogic:
     def check_valid_move(self, stone):
         return not (self.already_has_stone(stone) or \
                     self.suicide_move(stone) or \
-                    self.repeate_move(stone))
+                    self.ko(stone) or \
+                    self.super_ko(stone))
                     
     def does_remove_stone(self, board, stone):
         """
@@ -24,8 +25,6 @@ class GameLogic:
 
         for oppo in stone.adjacent:
             if oppo != -2 and oppo != 0 and oppo.color != stone.color:
-                #oppo.adjacent_stones()
-                #print(oppo.adjacent)
                 if self.does_remove_block(board, oppo):
                     remove = True
         
@@ -41,13 +40,11 @@ class GameLogic:
         
         block = BlockStone(board, stone)
 
-
         if not block.has_empty_adjacency() :
             return True
         return False
     
     def remove_block(self, board, stone):
-        lst = []
         x, y = stone.position
         board.board[x][y] = stone
         stone.adjacent_stones()
@@ -60,10 +57,7 @@ class GameLogic:
                     for stones in visited:
                         a, b = stones.position
                         board.board[a][b] = 0
-                        lst.append((a,b))
         board.board[x][y] = 0
-
-        return lst
     
     def copy_board(self, board):
         copy = GoBoard()
@@ -84,14 +78,8 @@ class GameLogic:
         x, y = stone.position
         self.board.board[x][y] = stone
         self.step += 1
-        if self.step < 4:
-            self.record.append(self.copy_board(self.board))
-        else:
-            prior = self.copy_board(self.record[2])
-            prioror = self.copy_board(self.record[1])
-            current = self.copy_board(self.board)
-            self.record = [prioror, prior, current]
-        
+      
+        self.record.append(self.copy_board(self.board))
         self.board.opposite_color()
 
         return True
@@ -102,8 +90,7 @@ class GameLogic:
         不能下在已经有子的地方
         """
         x, y = stone.position
-        if self.board.board[x][y] != 0:
-            print("already has stone")
+        
         return self.board.board[x][y] != 0
 
     def suicide_move(self, stone):
@@ -119,10 +106,9 @@ class GameLogic:
             self.board.board[x][y] = 0
             return False
         self.board.board[x][y] = 0
-        print("suicide move")
         return True
     
-    def repeate_move(self, stone):
+    def ko(self, stone):
         """
         打劫不能直接提劫
         """
@@ -176,8 +162,8 @@ class GameLogic:
         if self.step < 3:
             return False
         
-        prior = self.copy_board(self.record[2])
-        prioror = self.copy_board(self.record[1])
+        prior = self.copy_board(self.record[-1])
+        prioror = self.copy_board(self.record[-2])
         current = self.copy_board(self.board)
         new_stone = Stone(stone.position, stone.color, current)
 
@@ -189,8 +175,32 @@ class GameLogic:
     
         for i in temp:
             all_board.append(self.board_status(i))
-        print(all_board[2])
         return self.compare_board(all_board[0], all_board[2])
+    
+    def super_ko(self, stone):
+        all_board = []
+        if self.step < 3:
+            return False
+        
+        current = self.copy_board(self.board)
+        new_stone = Stone(stone.position, stone.color, current)
+        self.remove_block(current, new_stone)
+        x, y = new_stone.position
+        current.board[x][y] = new_stone
+        if self.board.num_stones() < current.num_stones():
+            return False
+
+        for i in self.record:
+            prior = self.copy_board(i)
+            all_board.append(self.board_status(prior))
+
+        all_board.append(self.board_status(current))
+
+        for i in all_board[:-1]:
+            if self.compare_board(i, all_board[-1]):
+                return True
+        
+        return False
 
 
     
