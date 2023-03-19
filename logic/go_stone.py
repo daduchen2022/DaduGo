@@ -92,7 +92,8 @@ class BlockStone:
             ver = stack.pop()
             ver.adjacent_stones()
             for stones in ver.adjacent:
-                if stones not in visited and stones != -2 and stones != 0 and stones.color == self.stone.color:
+                if stones not in visited and stones != -2 and stones != 0 and \
+                    stones.color == self.stone.color:
                     visited.add(stones)
                     stack.append(stones)
         
@@ -103,7 +104,6 @@ class BlockStone:
         
         return block
      
-
     def has_empty_adjacency(self):
         block = self.find_block_stone()
         for stone in block:
