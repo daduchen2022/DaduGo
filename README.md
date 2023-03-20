@@ -39,7 +39,7 @@ stone = Stone((0,0), "black", board)
 ### BlockStone
 `BlockStone`是由一个`GoBoard`和一个`Stone`对象组成的。它代表了在这个`GoBoard`棋盘上和这个`Stone`对象全局紧邻的所有`Stone`对象的集合。我们定义一个`GoBoard`中的有效位移为一个坐标到其正上方、正下方、正左、或正右的位移。我们定义当且仅当一个`Stone`对象的坐标能通过有限次有效位移到达另一个具有相同颜色属性的`Stone`对象的坐标时，这两个`Stone`对象具有全局紧邻关系。特别地，我们定义当且仅当一个`Stone`对象的坐标能通过1次有效位移到达另一个具有相同颜色属性的`Stone`对象的坐标时，这两个`Stone`对象具有局部紧邻关系。
 ### GameLogic
-`GameLogic`是由一个所有元素皆为0的`GoBoard`对象组成的。它代表了一个围棋对局。
+`GameLogic`是由一个`GoBoard`对象组成的。它代表了一个围棋对局。
 ```
 # 创建一个围棋对局
 new_game = GameLogic(GoBoard())
